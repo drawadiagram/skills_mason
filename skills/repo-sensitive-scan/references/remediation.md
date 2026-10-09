@@ -66,3 +66,29 @@ fork. Removing them means rewriting the published branch (e.g. `git filter-repo 
 and force-pushing, which breaks everyone else's checkouts and does not reach forks or caches. That
 is a decision for the repository owner; describe it, never do it unasked. If a **secret** was
 pushed, rotating the secret matters more than rewriting history.
+
+## Build artifacts (`.pptx`, `.docx`, `.xlsx`, `.pdf`)
+
+**Regenerate it from redacted sources; never edit the blob.** These are containers — a zip of XML
+parts, or deflate streams — so a byte-level substitution either corrupts the archive (a replacement
+of a different length invalidates the entry's stored sizes and CRC) or silently misses the value
+because it is compressed. Find the generator, fix the string there, re-run it, and commit the new
+artifact. Then re-scan: the pass over binaries decodes containers, so it reads what the document
+actually says.
+
+Also check whether the artifact belongs in git at all. A regenerable file that carries identifiers
+is worth `.gitignore`-ing and attaching to a release instead, so the next regeneration cannot
+re-publish something.
+
+## Host addresses
+
+Rotating beats rewriting. An address in published history cannot be recalled, and unlike a token it
+is also a fact about infrastructure other people can observe — so the fix that actually reduces
+exposure is a firewall rule, a new address, or putting the host behind a name you control, not a
+`filter-repo` run. Do both only if the owner wants the history clean for its own sake.
+
+Replace with a placeholder that keeps the document usable: `<linode-ip>`, `<campus-block>`. Give the
+doc **one key** defining every placeholder, in the file a deployer reads, so the substitution is
+mechanical for whoever has the real values. Remember all three spellings — dotted, IPv6, and the
+dashed reverse-DNS name — and that the reverse name is often the URL in the docs and the subject of
+the TLS certificate.

@@ -1,0 +1,27 @@
+# A skills repo is mostly worked examples, so its own scan is noisy by construction. One
+# Python regex per line, matched against "PATH:MATCH" by skills/repo-sensitive-scan. Every
+# entry here is a documentation example, named rather than covered by a wildcard — the point
+# of this file is to stay readable enough that a real finding still stands out.
+#
+# Note when adding to it: classify() yields the first *non-allowlisted* match per category
+# per line, so silencing one match on a line can reveal the next. Re-run until the count is
+# stable, and anchor on the invented name rather than on one path shape it appears in.
+
+# `me@uni.edu`, `jdoe` and allocation `abcd` are the stand-ins the remediation recipes and
+# the scanner's own docstring are written around.
+:me@uni\.edu$
+:/(u|home|scratch|work)/.*jdoe
+:/work/nvme/abcd/
+:/work/x/proj$
+# `USER` in caps is a placeholder in the same docstring, but site_path() only skips $ < {.
+^skills/repo-sensitive-scan/scripts/scan_sensitive\.py:/u/USER$
+
+# Credentialed URLs quoted to explain why masking cannot key on the category. The userinfo
+# is the invented half; the hosts are example.org / github.com placeholders.
+:(https|scheme)://(user|admin|svc|x-access-token):(token|password|pass|Hunter2|ghp_)
+
+# The four-part version string quoted as the known host-addr false positive.
+^skills/repo-sensitive-scan/SKILL\.md:1\.2\.3\.4$
+
+# "mason" is this repository's own name (skills_mason), in its README title.
+^README\.md:mason$
