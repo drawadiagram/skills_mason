@@ -1,6 +1,6 @@
 ---
 name: code-walk-deck
-description: Build a technical slide deck that walks an audience through a real codebase — a code walk, architecture walkthrough, design review, or "show the team how this works" talk — producing a .pptx with native editable diagrams, code blocks whose file:line citations are checked mechanically, and a speaking script generated from the deck's own notes. Use this skill whenever someone asks for slides, a deck, a presentation, or a walkthrough about a repository, a system they built, or code they want to explain to colleagues, even if they do not say "code walk"; also use it when revising or re-deriving an existing deck in a slides/ directory. Not for ordinary business decks with no codebase behind them.
+description: Build a technical slide deck that walks an audience through a real codebase — a code walk, architecture walkthrough, design review, or "show the team how this works" talk — producing a .pptx with native editable diagrams, code blocks whose file:line citations are checked mechanically, and a speaking script generated from the deck's own notes. Use this skill whenever someone asks for slides, a deck, a presentation, or a walkthrough about a repository, a system they built, or code they want to explain to colleagues, even if they do not say "code walk"; also use it when revising or re-deriving an existing deck in a slides/ directory, or when reorganising one around functionality, performance and usability. Not for ordinary business decks with no codebase behind them.
 ---
 
 # Code-walk deck
@@ -40,13 +40,14 @@ In `<project>/slides/`:
 | `build_deck.js` | the deck, as code. Requires `deck_lib.js`; every diagram is native shapes |
 | `run_model.py` → `run.json` | every number on a slide, mined from the repo |
 | `anchors.json` | every `file:line` the deck prints, checked by `check_anchors.py` |
-| `deck.json` | title and running orders, read by `make_script.py` |
+| `deck.json` | title, the three acts and the running orders, read by `make_script.py` |
 | `DECK_OUTLINE.md` | audience, caveats, per-slide intent, delivery notes |
 | `CODE_FOR_DECK.md` | each on-slide snippet, anchored and fidelity-marked |
 | `DECK_SCRIPT.md` | **generated** — never write it by hand |
 | `<name>.pptx` / `.pdf` | the artifacts |
 
-`scripts/new_deck.py` scaffolds the first six. Nothing in the scaffold is precious.
+`scripts/new_deck.py` scaffolds the first six, including the three act dividers and the framing
+slide. Nothing in the scaffold is precious — but if you drop the acts, drop them deliberately.
 
 ## Three rules that keep the deck true as the code moves
 
@@ -73,6 +74,42 @@ single source of the spoken prose; `make_script.py` renders them to `DECK_SCRIPT
 measured timings. Maintaining a script alongside the notes looks harmless and diverges
 within a day.
 
+## Three dimensions a code walk has to cover
+
+A deck ordered by module — here is the loop, here is the store, here is the frontend — answers a
+question nobody asked. A technical audience arrives with three, and they are worth naming because
+each one takes a different kind of evidence:
+
+**Functionality — what specific new tasks does this software make possible?** Not features: tasks.
+What can someone do now that they could not before, and what does the system carry end to end with
+no human in the middle.
+
+**Performance — what does it cost to run, in efficiency and in effectiveness?** Usually hardware
+terms: scalability, occupancy, throughput, the critical path. But it also includes *scientific*
+performance, and the most interesting cases are where scale and scientific yield are **not linear in
+each other** — where folding twice as many designs does not buy twice the chance of a good one, or
+where a cheaper model changes which questions are askable at all. If the system has such a point,
+that is the most valuable slide in the act, and it is usually a decision the software surfaces to a
+human rather than a number it reports.
+
+**Usability — what is it usable *as*?** Not the user interface: the use cases. Three recurring
+answers, and most systems can claim one or two honestly — **as an application** someone opens, **as
+a platform** other people's credentials, endpoints and data plug into, and **as a component** inside
+a larger workflow something else drives. Say which, and say which one you have no evidence for.
+
+Organise the deck as three acts in that order, each opened by a short divider that states the
+dimension, makes three claims, and — in red, **before the act rather than after it** — names the
+weakest of the three. `deck_lib.js` has a `divider()` for exactly this shape. Two things fall out of
+the structure that are worth it on their own:
+
+- **One act will be short.** That is information, not a problem. A short act with a named gap reads
+  as candour; a padded one reads as decoration, and the padding is what the audience will probe.
+- **The status and asks slides get a spine.** Status becomes green and red *per dimension*, which
+  makes an unevenly honest deck visible at a glance, and asks group by what each finding costs.
+
+Name the dimension you have the least evidence for in the first three minutes. You will be asked
+about it anyway, and volunteering it is what buys belief in the other two.
+
 ## Workflow
 
 ### 1. Read the code, and find the caveats first
@@ -98,14 +135,20 @@ deck build never leaves state behind in the project.
 
 ### 3. Outline against a budget, not a slide count
 
-Decide the slot length, then target **about 80% of it in speech** so questions fit. At 155
+Lay the three acts out before the slides: the claims each one makes, and the claim in each one you
+cannot fully support. That list is the deck's skeleton, and it is also the answer to "what do I cut"
+later — cut content slides, never the dividers, because the dividers are what keep a cut deck
+legible.
+
+Then decide the slot length and target **about 80% of it in speech** so questions fit. At 155
 wpm that is roughly 2,500 words for a 20-minute slot. Write the outline as per-slide intent
 — what each slide must make the audience understand — plus which slides are cuttable and
 which are protected.
 
-Weight the deck toward whatever this specific room came for. If the authors of a dependency
-are present, the seam with their code deserves two slides and the feature tour deserves
-none.
+Weight the acts toward whatever this specific room came for. If the authors of a dependency
+are present, the seam with their code deserves two or three slides and the feature tour deserves
+none — and note that the seam usually belongs in the *performance* act, because concurrency is what
+it is for. Do not balance the acts for symmetry: an act is as long as its evidence.
 
 ### 4. Build the deck in chunks
 
@@ -167,12 +210,25 @@ does something it does not.
 minute two — not at minute twenty, and not only when asked. If a result is one run, one
 configuration, one draw, the card says so.
 
-**A status slide, uncompressed.** Two columns: what genuinely runs, and what has never run.
-When the clock is tight this slide is the one people want to cut; protect it.
+**A status slide, uncompressed.** What genuinely runs, and what has never run — two columns, or six
+if you cut it by dimension, which is better: it shows whether your honesty is evenly distributed.
+Keep the red column the same length as the green one. An equal-length red column reads as candour; a
+short one reads as spin. When the clock is tight this slide is the one people want to cut; protect
+it.
 
 **End on asks, not a summary.** A code walk's best ending is the questions you actually want
 answered — ideally reproducible ones that name a file and a line. A summary slide tells an
-audience what they just heard; an asks slide tells them why they are in the room.
+audience what they just heard; an asks slide tells them why they are in the room. Group them by the
+dimension each one damages: it makes them easier to answer, and it shows you know what they cost.
+
+**A performance claim names its denominator and its ceiling.** This is the dimension where
+overclaiming is easiest, because systems vocabulary makes everything sound measured. A concurrency
+ratio is not a speedup unless there is a serial baseline to divide by; a number from one host at one
+worker count is not a scaling result. Say what was varied and what was not — "mean 2.04 tasks in
+flight, peak 6, and I never varied the pool width" costs one clause and cannot be attacked, where
+"2× concurrency" invites the one question you cannot answer. If the act has no real measurement in
+it, spend a slide saying so and listing what is missing. That slide is worth more than three slides
+of architecture diagram standing in for performance.
 
 ## When the deck is for an existing codebase you have just worked in
 
@@ -188,8 +244,9 @@ consideration.
 ## Reference files
 
 - `references/slide-archetypes.md` — the recurring slide and figure types, with geometry
-  that fits: the two-lane coroutine diagram, the layer map with forbidden edges, the
-  measured-run bar chart, the gate table, the green/red status columns, the asks grid.
+  that fits: the dimension divider, the framing slide, the two-lane coroutine diagram, the layer map
+  with forbidden edges, the measured-run bar chart, the measured-and-not-measured ledger, the gate
+  table, the status columns (two-column and by-dimension), the asks grid.
 - `references/layout-failures.md` — how these decks actually break, and the fix for each.
 
 ## Scripts

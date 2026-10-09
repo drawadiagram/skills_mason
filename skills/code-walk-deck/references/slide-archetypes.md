@@ -11,6 +11,8 @@ footer at 7.1.
 
 - [Title](#title)
 - [What it does / what it is not](#what-it-does--what-it-is-not)
+- [The framing slide](#the-framing-slide)
+- [Dimension divider](#dimension-divider)
 - [The constraint slide](#the-constraint-slide)
 - [Two-lane process diagram](#two-lane-process-diagram)
 - [Layer map with forbidden edges](#layer-map-with-forbidden-edges)
@@ -19,7 +21,9 @@ footer at 7.1.
 - [Code slide](#code-slide)
 - [Measured-run bars](#measured-run-bars)
 - [Defect ledger](#defect-ledger)
+- [Measured and not measured](#measured-and-not-measured)
 - [Status columns](#status-columns)
+- [Status columns by dimension](#status-columns-by-dimension)
 - [Asks grid](#asks-grid)
 
 ---
@@ -51,6 +55,35 @@ not.
 
 If the process is a loop rather than a pipeline, draw the back edges under the strip and
 label them — that is usually the single most clarifying mark on the slide.
+
+## The framing slide
+
+Three columns at x = `M + i*4.28`, each 4.0 wide: a headed band in the column's colour (y 1.5,
+h 0.42), a tinted definition panel under it (h ~1.0), then three evidence rows at 0.78 pitch,
+alternating fill. Close with a full-width dark band at y ~5.8, h ~1.05.
+
+The columns are the three dimensions — functionality, performance, usability — with the definition
+you are using for each, because "performance" means four different things in a room of four people.
+The dark band is the slide's work: **name the weak column here**, with the reason, in the first three
+minutes. Everything the deck later concedes becomes a promise kept rather than an admission
+extracted.
+
+Caption each column with what it answers. Caption the weak one with "what it answers · and what it
+does not", which is a half-second of honesty for free.
+
+## Dimension divider
+
+`deck_lib.js::divider()`. Dark slide: an `ACT n OF 3` eyebrow at y 0.85, the dimension in ~46pt
+serif at y 1.2, the definition in italic at y 2.3, three claim rows at 0.86 pitch from y 3.2 (each a
+0.06-wide accent rule, a bold heading, one line of evidence under it), and a red-bordered band at
+y 6.1 holding the act's weakest claim.
+
+Three claims is the budget — a fourth pushes the caveat band into the footer, and a divider that
+needs four claims is a content slide wearing a divider's clothes. Keep all three dividers
+geometrically identical: three identical dividers read as a structure, three artful ones read as
+three unrelated slides.
+
+Twenty seconds of speech each. That is the whole cost, and it is why they are the last thing to cut.
 
 ## The constraint slide
 
@@ -139,6 +172,26 @@ is now. Alternate the row fill.
 Close with the generalisation in a dark band. The specific defects are interesting; the
 pattern across them is what the audience takes away.
 
+## Measured and not measured
+
+The slide that makes a performance act honest. Left half: the one real figure, with its axes
+labelled in the units that matter and any declared limits drawn as lines. Right half: two stacked
+cards — `panel` fill, "Measured, and in this deck"; `failTint` fill with a `fail` heading, "Not
+measured — so not claimed". Four or five rows each. Close with a dark band naming the place where
+the dimension stops being a systems question.
+
+Rules that make it work:
+
+- **Every row on the left names where the number came from**, and the footer names the host, the
+  date and whether anything was simulated. A measurement taken on the presenter's laptop is still a
+  measurement; an unlabelled one is a liability.
+- **The right card is written as refusals, not apologies.** "No serial baseline, so nothing above
+  divides into a speedup" is a fact about the evidence. "We did not have time to benchmark" is an
+  excuse, and invites the follow-up.
+- If a declared limit and the real cost are in different units — a cap on raw bytes against a cost
+  paid in compressed ones — that asymmetry is usually the most interesting thing on the slide. Draw
+  both.
+
 ## Status columns
 
 Two headed columns, green and red, same number of rows each, one claim per row. The
@@ -147,12 +200,33 @@ spin.
 
 This is the slide that gets cut when the clock is tight. Protect it.
 
+## Status columns by dimension
+
+The same slide in three columns of two blocks instead of two columns of one. Per dimension (x =
+`M + i*4.28`, w 4.0): a headed band in the dimension's colour, a green band with three rows, a red
+band with three rows. Rows at 0.6 pitch, h 0.58, heading 10pt over a 8.5pt line — anything taller
+collides with the closing paragraph, which is the failure this layout fails into.
+
+Three rows each is not a formatting choice. It forces you to decide which three things actually run
+and which three do not, per dimension, and an audience can see at a glance whether your candour is
+evenly distributed or concentrated in the dimension you were least invested in.
+
 ## Asks grid
 
 Dark background, six boxed questions in two columns (each ~6.03 wide, 1.58 tall, 1.72
 pitch), each with a coloured left edge, a numeral, a question as the heading, and three or
 four lines of context naming a file and a line.
 
-Group them by audience — the dependency authors, the domain experts, everyone — and make
-each one answerable. "Thoughts?" is not an ask; "should this handler catch `Exception` and
+Group them by audience — the dependency authors, the domain experts, everyone — or, better when the
+deck has three acts, **by what each finding costs**: one column for the ones that produce a wrong
+answer or burn real time, one for the ones paid by whoever adopts the stack next. Tag each with its
+dimension. Grouping this way answers "why should I care about number six" before it is asked, and it
+lets you keep the original numbering while changing the order, which matters because the numbers are
+cited in the companion files.
+
+Make each one answerable. "Thoughts?" is not an ask; "should this handler catch `Exception` and
 fail the one task rather than the sweep?" is.
+
+With eight items in two columns of four, use a ~1.0 pitch and start at y ~1.84 if the columns have
+headings; the question box at the foot wants y ~5.86, and the collision between the last item and
+that box is the one this layout actually fails into.

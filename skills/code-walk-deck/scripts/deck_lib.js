@@ -194,6 +194,45 @@ function createDeck(opts = {}) {
     }
   }
 
+  // An act divider: the dimension, the definition you are using for it, the claims the
+  // act will make, and -- in red, before the act rather than after it -- the weakest of
+  // them. Geometry is fixed on purpose: three identical dividers read as a structure,
+  // three artful ones read as three slides.
+  //
+  //   divider(s, { n: 2, name: "Performance", definition: "...",
+  //                claims: [["heading", "one line of evidence"], ...],
+  //                caveat: "the one you would rather not say" });
+  //
+  // Three claims is the budget. A fourth pushes the caveat band into the footer, and a
+  // divider that needs four claims is really a content slide.
+  function divider(s, o) {
+    s.background = { color: C.ink };
+    text(s, `ACT ${o.n}${o.of ? ` OF ${o.of}` : ""}`, M, 0.85, 4, 0.3,
+      { fontSize: 13, bold: true, color: C.muted, charSpacing: 3 });
+    text(s, String(o.name).toUpperCase(), M, 1.2, 9.5, 0.95,
+      { fontFace: HF, fontSize: 46, bold: true, color: C.white, charSpacing: 1 });
+    text(s, o.definition, M, 2.3, W - 2 * M - 0.2, 0.6,
+      { fontSize: 16, color: "C8D4DD", italic: true });
+    (o.claims || []).forEach(([h, b], i) => {
+      const y = 3.2 + i * 0.86;
+      s.addShape(pres.shapes.RECTANGLE, { x: M, y: y + 0.04, w: 0.06, h: 0.6,
+        fill: { color: C.accent }, line: { color: C.accent } });
+      // A warm mid-tone, not accentTint: the tints are fills, and on an ink
+      // background they come out close enough to white to lose the hierarchy.
+      text(s, h, M + 0.24, y, W - 2 * M - 0.24, 0.3,
+        { fontSize: 15, bold: true, color: "F0C898" });
+      text(s, b, M + 0.24, y + 0.3, W - 2 * M - 0.24, 0.32, { fontSize: 12, color: "C8D4DD" });
+    });
+    if (o.caveat) {
+      s.addShape(pres.shapes.RECTANGLE, { x: M, y: 6.1, w: W - 2 * M, h: 0.84,
+        fill: { color: "3A2222" }, line: { color: C.fail, width: 2 } });
+      text(s, [
+        { text: "The weakest claim in this act:  ", options: { bold: true, color: "E8A0A0" } },
+        { text: o.caveat, options: { color: C.white } },
+      ], M + 0.18, 6.22, W - 2 * M - 0.36, 0.64, { fontSize: 13 });
+    }
+  }
+
   // `mono`/`center` are column indices. `cell(i, j, value)` may return extra options
   // for one cell, which is how a "refused"/"ok" column gets coloured by its content.
   function tbl(s, hdr, rows, x, y, cw, o = {}) {
@@ -226,7 +265,7 @@ function createDeck(opts = {}) {
   }
 
   return { pres, C, W, H, M, HF, BF, MF, DASH, MIN_PT, warnings,
-           text, title, box, line, label, legend, pill, code, footer, card, tbl, save };
+           text, title, divider, box, line, label, legend, pill, code, footer, card, tbl, save };
 }
 
 module.exports = { createDeck, BASE_PALETTE, W, H, M, HF, BF, MF, DASH, MIN_PT };
