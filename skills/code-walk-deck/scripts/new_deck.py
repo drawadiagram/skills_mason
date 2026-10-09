@@ -44,7 +44,7 @@ const D = createDeck({{
   // Give each layer of the system one colour and keep it for the whole deck.
   palette: {{ /* a: "3B4E8C", b: "1E6470", c: "2E7D5B", d: "7A4A8C", accent: "D9731A" */ }},
 }});
-const {{ pres, C, W, H, M, HF, BF, MF, text, title, box, line, label,
+const {{ pres, C, W, H, M, HF, BF, MF, text, title, divider, box, line, label,
         legend, pill, code, footer, card, tbl, save }} = D;
 
 // ================================================================ 1. Title
@@ -61,11 +61,66 @@ const {{ pres, C, W, H, M, HF, BF, MF, text, title, box, line, label,
 the rest of the deck a consequence rather than a tour.`);
 }}
 
-// ================================================================ 2. Next slide
+// ================================================================ 2. Three dimensions
+{{
+  // The frame. Three columns -- functionality, performance, usability -- with the
+  // definition you are using for each, and a dark band naming the weak one. Say which
+  // act you cannot support here, in the first three minutes, not when asked.
+  const s = pres.addSlide(); s.background = {{ color: C.white }};
+  title(s, "Three questions this deck is organised around", "How to read it");
+  s.addNotes(`[0:50] The three questions any technical audience arrives with, and which of
+the three I have the least evidence for.`);
+}}
+
+// ================================================================ 3. FUNCTIONALITY — divider
+{{
+  const s = pres.addSlide();
+  divider(s, {{
+    n: 1, of: 3, name: "Functionality",
+    definition: "The specific new tasks this makes possible — what you can do now that you could not.",
+    claims: [
+      ["A claim, as a sentence someone could disagree with", "the evidence, in one line, with a number in it"],
+      ["A second", "..."],
+      ["A third", "..."],
+    ],
+    caveat: "the weakest of the three, said before the act rather than after it",
+  }});
+  s.addNotes(`[0:20] Act one. Three claims, and the one I cannot fully support.`);
+}}
+
+// ================================================================ 4. Next slide
 {{
   const s = pres.addSlide(); s.background = {{ color: C.white }};
-  title(s, "Slide title", "Section");
+  title(s, "Slide title", "Functionality · what this one shows");
   s.addNotes(`[1:00] Spoken prose. Bracketed text is direction and is not counted.`);
+}}
+
+// ================================================================ 5. PERFORMANCE — divider
+{{
+  const s = pres.addSlide();
+  divider(s, {{
+    n: 2, of: 3, name: "Performance",
+    definition: "Runtime efficiency and effectiveness — and the places where scale and scientific yield are not linear in each other.",
+    claims: [["...", "..."], ["...", "..."], ["...", "..."]],
+    caveat: "what was never measured. Name it here; slide N lists the rest",
+  }});
+  s.addNotes(`[0:20] Act two.`);
+}}
+
+// ================================================================ 6. USABILITY — divider
+{{
+  const s = pres.addSlide();
+  divider(s, {{
+    n: 3, of: 3, name: "Usability",
+    definition: "Not the interface — the use cases: as an application, as a platform, as a component in someone else's workflow.",
+    claims: [
+      ["As an application", "..."],
+      ["As a platform", "..."],
+      ["As a component", "..."],
+    ],
+    caveat: "the mode you have no second consumer for",
+  }});
+  s.addNotes(`[0:20] Act three.`);
 }}
 
 save(path.join(__dirname, "{out}"));
@@ -128,11 +183,22 @@ if __name__ == "__main__":
 
 DECK_JSON = '''{{
   "title": "{title} code walk",
+  "acts": [
+    {{"n": 1, "name": "Functionality", "from": 3, "slides": "3-4",
+     "question": "what specific new tasks does this make possible?",
+     "gap": "the claim you cannot fully support"}},
+    {{"n": 2, "name": "Performance", "from": 5, "slides": "5",
+     "question": "what does it cost to run, in efficiency and effectiveness?",
+     "gap": "what was never measured"}},
+    {{"n": 3, "name": "Usability", "from": 6, "slides": "6",
+     "question": "what is it usable as - application, platform, component?",
+     "gap": "the mode with no second consumer"}}
+  ],
   "orders": [
     {{"name": "A · full", "drop": [], "fits": "a 25-minute slot"}},
     {{"name": "B · default", "drop": [], "fits": "a 20-minute slot with questions inline"}}
   ],
-  "protect": "**Protect** the slides this room came for, and do not compress the status slide.",
+  "protect": "**Protect** the slides this room came for, and do not compress the status slide. Cut content slides, never the dividers.",
   "say_out_loud": "the caveats that would damage your credibility if someone else found them first"
 }}
 '''
@@ -185,6 +251,19 @@ slide and again on the status slide.
 
 ---
 
+## The three dimensions
+
+| Act | The question | Slides | What it concedes on its own divider |
+|---|---|---|---|
+| **Functionality** | what specific new tasks does this make possible? | | |
+| **Performance** | what does it cost to run — efficiency, effectiveness, and where scale and scientific yield stop being linear in each other? | | |
+| **Usability** | not the interface: what is it usable *as* — an application, a platform, a component? | | |
+
+Fill the last column before writing a single slide. One of the three will be thin; that is the act
+whose caveat goes on its divider and whose gaps get their own slide at the end of the act.
+
+---
+
 ## Visual vocabulary
 
 ```
@@ -200,7 +279,9 @@ Colour roles: one per layer of the system, held for the whole deck.
 ## Slides
 
 ### 1 — Title
-### 2 — ...
+### 2 — Three dimensions
+### 3 — FUNCTIONALITY — divider
+### 4 — ...
 
 ---
 
