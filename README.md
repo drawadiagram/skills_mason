@@ -9,6 +9,7 @@ working on HPC/SLURM clusters (built and tested on NCSA Delta).
 |---|---|
 | [code-walk-deck](skills/code-walk-deck/SKILL.md) | Build a technical slide deck that walks an audience through a real codebase: a `.pptx` with native editable diagrams, `file:line` citations checked mechanically, and a speaking script generated from the deck's own notes. |
 | [hpc-run-data-review](skills/hpc-run-data-review/SKILL.md) | Inventory a project's run directories, join them to `sacct`, classify each run (smoke test, pipeline, campaign, failure kept as evidence), and plan what to keep, delete, or export as a verified tarball. |
+| [plans-backlog](skills/plans-backlog/SKILL.md) | Structure a project's `plans/` dir and `BACKLOG.md`: one evidence-backed row per item linked to a dated plan doc, upstream-defect docs, honest status from open to closed-by-a-run, and a linter for duplicate IDs, broken links/anchors and orphan docs. |
 | [repo-sensitive-scan](skills/repo-sensitive-scan/SKILL.md) | Scan a repo's committed or staged content for emails, Slurm accounts and allocations, usernames, cluster paths and secrets; mark each finding as pushed or unpushed, and propose fixes. |
 | [slurm-job-watch](skills/slurm-job-watch/SKILL.md) | Watch SLURM jobs from submission to finish: queue position and estimated start, state changes, log errors and progress, silent hangs, and a final `sacct`/`seff` summary. |
 
