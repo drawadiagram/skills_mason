@@ -31,13 +31,18 @@ skills/<skill-name>/
 
 ## Install
 
-Symlink the skills you want into your personal skills directory:
+`scripts/sync-skills.sh` symlinks every skill in this checkout into your personal skills
+directory (`~/.claude/skills` by default) and brings existing links back in sync:
 
 ```bash
-mkdir -p ~/.claude/skills
-for s in skills/*/; do ln -sfn "$PWD/$s" ~/.claude/skills/"$(basename "$s")"; done
+scripts/sync-skills.sh              # link everything into ~/.claude/skills
+scripts/sync-skills.sh --dry-run    # show what it would do
+scripts/sync-skills.sh .claude/skills   # or into one project
 ```
 
-Remove any existing copy in `~/.claude/skills/<name>` first, because `ln -sfn` will not
-replace a real directory. To use a skill in a single project, symlink it into that project's
-`.claude/skills/` instead.
+It is safe to re-run: it adds links for new skills, repoints links left dangling by a rename,
+and removes links to skills no longer in this checkout. It never overwrites a real file or
+directory, or a symlink pointing somewhere else — those are reported as conflicts and the
+script exits non-zero, so clear them by hand and re-run.
+
+To use a single skill, symlink just that one: `ln -s "$PWD/skills/<name>" ~/.claude/skills/`.
