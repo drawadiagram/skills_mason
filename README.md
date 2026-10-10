@@ -10,15 +10,18 @@ working on HPC/SLURM clusters (built and tested on NCSA Delta).
 | [code-walk-deck](skills/code-walk-deck/SKILL.md) | Build a technical slide deck that walks an audience through a real codebase: a `.pptx` with native editable diagrams, `file:line` citations checked mechanically, and a speaking script generated from the deck's own notes. |
 | [hpc-run-data-review](skills/hpc-run-data-review/SKILL.md) | Inventory a project's run directories, join them to `sacct`, classify each run (smoke test, pipeline, campaign, failure kept as evidence), and plan what to keep, delete, or export as a verified tarball. |
 | [plans-backlog](skills/plans-backlog/SKILL.md) | Structure a project's `plans/` dir and `BACKLOG.md`: one evidence-backed row per item linked to a dated plan doc, upstream-defect docs, honest status from open to closed-by-a-run, and a linter for duplicate IDs, broken links/anchors and orphan docs. |
-| [repo-sensitive-scan](skills/repo-sensitive-scan/SKILL.md) | Scan a repo's committed or staged content for emails, Slurm accounts and allocations, usernames, cluster paths and secrets; mark each finding as pushed or unpushed, and propose fixes. |
+| [repo-rehome](skills/repo-rehome/SKILL.md) | Move a repo, or the work in it, to a new home: survey what your access actually permits, pick the shape (GitHub transfer, replace a default branch with unrelated history, or fold one repo into another), then follow a runbook that proves the old commits are recoverable before the destructive step. |
+| [repo-sensitive-scan](skills/repo-sensitive-scan/SKILL.md) | Scan a repo's committed or staged content for emails, Slurm accounts and allocations, usernames, cluster paths, host addresses and secrets — including inside committed `.pptx`/`.pdf` artifacts; mark each finding as pushed or unpushed, report whether each remote is public, and propose fixes. |
 | [slurm-job-watch](skills/slurm-job-watch/SKILL.md) | Watch SLURM jobs from submission to finish: queue position and estimated start, state changes, log errors and progress, silent hangs, and a final `sacct`/`seff` summary. |
 
-`code-walk-deck` is the one skill that needs more than a login node: `node` with
+Two skills need more than a login node. `code-walk-deck` wants `node` with
 [pptxgenjs](https://gitbrent.github.io/PptxGenJS/) to build the deck, and `soffice`
-(LibreOffice) plus `pdftoppm` (poppler-utils) to render it for the layout check. Its Python
-scripts are stdlib-only like the rest, and each reports clearly when a tool is missing.
-See that skill's Requirements section for what still works without them, and `CLAUDE.md`
-for the policy skills follow when they need an external tool.
+(LibreOffice) plus `pdftoppm` (poppler-utils) to render it for the layout check.
+`repo-rehome` wants [`gh`](https://cli.github.com), authenticated: it can be done without it,
+but `gh` is what reads a ref back from the server, which is the check that makes replacing a
+branch reversible. Their Python scripts are stdlib-only like the rest, and each reports
+clearly when a tool is missing. See each skill's Requirements section for what still works
+without them, and `CLAUDE.md` for the policy skills follow when they need an external tool.
 
 ## Layout
 

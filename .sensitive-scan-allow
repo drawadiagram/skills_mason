@@ -25,3 +25,10 @@
 
 # "mason" is this repository's own name (skills_mason), in its README title.
 ^README\.md:mason$
+
+# `ssh -T git@github.com` is a connectivity test, not an address of anyone's.
+^skills/repo-rehome/SKILL\.md:git@github\.com$
+
+# Invented placeholders in repo-rehome's worked examples: `svc` is a made-up service
+# account and `widget`/`widget-lib` a made-up project.
+^skills/repo-rehome/references/.*:/home/svc/widget
