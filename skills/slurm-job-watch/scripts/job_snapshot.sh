@@ -1,5 +1,6 @@
 #!/bin/bash
-# One-shot status for one or more SLURM jobs: where each is, why, and where its output goes.
+# One-shot status for one or more SLURM jobs: where each is, why, which account it bills,
+# and where its output goes.
 #
 #   job_snapshot.sh JOBID [JOBID...]      # specific jobs
 #   job_snapshot.sh --mine                # every queued/running job of $USER
@@ -28,7 +29,10 @@ for J in "${JOBS[@]}"; do
             echo "  est start: $(squeue -h -j "$J" --start -o '%S (%r)' 2>/dev/null)"
             sprio -h -j "$J" -o "  priority=%Y age=%A fairshare=%F jobsize=%J" 2>/dev/null
         fi
-        scontrol show job "$J" 2>/dev/null | grep -oE "(WorkDir|StdOut|StdErr|Command)=[^ ]+" | sed 's/^/  /'
+        # Account= is here because an inherited SBATCH_ACCOUNT silently bills the wrong
+        # project, and this is the first place anyone looks after submitting.
+        scontrol show job "$J" 2>/dev/null \
+            | grep -oE "(Account|WorkDir|StdOut|StdErr|Command)=[^ ]+" | sed 's/^/  /'
     else
         echo "  not in queue - accounting:"
         sacct -X -j "$J" -o JobID,JobName%28,State,ExitCode,Elapsed,Start,End,NodeList 2>/dev/null | sed 's/^/  /'
